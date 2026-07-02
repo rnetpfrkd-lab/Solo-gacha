@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>혼자 할 일 가챠</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&display=swap');
+
+    :root {
+      --bg: #fff8fd;
+      --paper: #fffef8;
+      --ink: #27222b;
+      --muted: #7b7180;
+      --pink: #ff9fc9;
+      --pink2: #ffd7e8;
+      --violet: #bda7ff;
+      --blue: #b9e9ff;
+      --mint: #c9f7df;
+      --yellow: #fff0a8;
+      --line: #2b2630;
+      --shadow: 4px 5px 0 rgba(43, 38, 48, .16);
+      --soft-shadow: 0 12px 30px rgba(117, 84, 140, .16);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: 'Gaegu', ui-rounded, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+      background:
+        radial-gradient(circle at 10% 12%, rgba(255, 159, 201, .35) 0 7px, transparent 8px),
+        radial-gradient(circle at 84% 18%, rgba(189, 167, 255, .35) 0 9px, transparent 10px),
+        radial-gradient(circle at 78% 86%, rgba(185, 233, 255, .55) 0 11px, transparent 12px),
+        linear-gradient(135deg, #fff8fd 0%, #f9fbff 48%, #fffdf3 100%);
+      overflow-x: hidden;
+    }
+
+    button, input {
+      font: inherit;
+      color: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .app {
+      width: min(100%, 430px);
+      margin: 0 auto;
+      min-height: 100vh;
+      padding: 14px 14px 24px;
+      position: relative;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 10px;
+      border: 1.8px solid var(--line);
+      background: rgba(255, 254, 248, .74);
+      border-radius: 999px;
+      box-shadow: 2px 3px 0 rgba(43, 38, 48, .09);
+      transform: rotate(-1deg);
+    }
+
+    .brand-dot {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--pink), var(--violet));
+      border: 1.6px solid var(--line);
+    }
+
+    .brand-title {
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -.02em;
+      line-height: 1;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .round-mini {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1.8px solid var(--line);
+      background: var(--paper);
+      box-shadow: 2px 3px 0 rgba(43, 38, 48, .14);
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+      line-height: 1;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+
+    .round-mini:active,
+    .draw-btn:active,
+    .tiny-btn:active,
+    .pill:active {
+      transform: translate(2px, 2px);
+      box-shadow: 0 0 0 rgba(43, 38, 48, 0);
+    }
+
+    .stage {
+      position: relative;
+      min-height: 490px;
+      border: 2px solid var(--line);
+      border-radius: 30px;
+      background:
+        linear-gradient(rgba(255,255,255,.42) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.42) 1px, transparent 1px),
+        linear-gradient(155deg, rgba(255, 215, 232, .78), rgba(255, 254, 248, .86) 43%, rgba(201, 247, 223, .56));
+      background-size: 23px 23px, 23px 23px, auto;
+      box-shadow: var(--shadow);
+      padding: 18px 16px 16px;
+      overflow: hidden;
+    }
+
+    .sticker {
+      position: absolute;
+      user-select: none;
+      pointer-events: none;
+      filter: drop-shadow(1px 2px 0 rgba(43,38,48,.12));
+      opacity: .9;
+    }
+
+    .s1 { top: 18px; right: 26px; font-size: 20px; transform: rotate(13deg); }
+    .s2 { top: 94px; left: 24px; font-size: 17px; transform: rotate(-16deg); }
+    .s3 { bottom: 120px; right: 24px; font-size: 18px; transform: rotate(10deg); }
+    .s4 { bottom: 27px; left: 30px; font-size: 16px; transform: rotate(-10deg); }
+
+    .main-copy {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      margin-top: 6px;
+    }
+
+    .tiny-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border: 1.5px dashed rgba(43, 38, 48, .58);
+      border-radius: 999px;
+      background: rgba(255,255,255,.54);
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1;
+    }
+
+    .jar-wrap {
+      position: relative;
+      width: 190px;
+      height: 205px;
+      margin: 30px auto 13px;
+    }
+
+    .jar-lid {
+      position: absolute;
+      top: 7px;
+      left: 48px;
+      width: 94px;
+      height: 28px;
+      border: 2px solid var(--line);
+      border-radius: 18px 18px 8px 8px;
+      background: linear-gradient(180deg, #fff6aa, #ffd36f);
+      box-shadow: 2px 3px 0 rgba(43, 38, 48, .15);
+      z-index: 3;
+    }
+
+    .jar {
+      position: absolute;
+      left: 23px;
+      top: 28px;
+      width: 145px;
+      height: 164px;
+      border: 2.2px solid var(--line);
+      border-radius: 28px 28px 42px 42px;
+      background: linear-gradient(150deg, rgba(255,255,255,.78), rgba(185,233,255,.42) 52%, rgba(255,159,201,.18));
+      box-shadow: inset 10px 0 0 rgba(255,255,255,.36), var(--soft-shadow);
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    .jar:before {
+      content: '';
+      position: absolute;
+      top: 18px;
+      left: 20px;
+      width: 18px;
+      height: 78px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.46);
+      transform: rotate(10deg);
+    }
+
+    .jar:after {
+      content: '';
+      position: absolute;
+      bottom: 16px;
+      left: 18px;
+      right: 18px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .24);
+      border: 1px dashed rgba(43,38,48,.24);
+    }
+
+    .capsule {
+      position: absolute;
+      width: 48px;
+      height: 25px;
+      border: 1.8px solid var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+      background: linear-gradient(90deg, var(--pink) 0 50%, #fffdf5 50% 100%);
+      box-shadow: 1px 2px 0 rgba(43, 38, 48, .13);
+      z-index: 3;
+    }
+
+    .capsule:after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 1.7px;
+      background: var(--line);
+      opacity: .9;
+    }
+
+    .c1 { left: 47px; top: 85px; transform: rotate(-16deg); background: linear-gradient(90deg, var(--pink) 0 50%, #fffdf5 50% 100%); }
+    .c2 { left: 92px; top: 100px; transform: rotate(20deg); background: linear-gradient(90deg, var(--blue) 0 50%, #fffdf5 50% 100%); }
+    .c3 { left: 61px; top: 125px; transform: rotate(10deg); background: linear-gradient(90deg, var(--mint) 0 50%, #fffdf5 50% 100%); }
+    .c4 { left: 96px; top: 137px; transform: rotate(-20deg); background: linear-gradient(90deg, var(--violet) 0 50%, #fffdf5 50% 100%); }
+
+    .picked-capsule {
+      position: absolute;
+      left: 70px;
+      top: 52px;
+      width: 55px;
+      height: 29px;
+      border: 2px solid var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+      background: linear-gradient(90deg, #ff7fba 0 50%, #fffdf5 50% 100%);
+      box-shadow: 3px 4px 0 rgba(43, 38, 48, .16);
+      opacity: 0;
+      z-index: 5;
+      transform: translateY(65px) rotate(-8deg) scale(.7);
+    }
+
+    .picked-capsule:after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--line);
+    }
+
+    .jar-wrap.is-drawing .jar-lid { animation: lid-hop .52s ease; }
+    .jar-wrap.is-drawing .jar { animation: jar-shake .52s ease; }
+    .jar-wrap.is-drawing .picked-capsule { animation: pop-capsule .7s cubic-bezier(.16, 1.1, .32, 1) forwards; }
+
+    @keyframes jar-shake {
+      0%, 100% { transform: rotate(0); }
+      22% { transform: rotate(-3deg); }
+      44% { transform: rotate(3deg); }
+      66% { transform: rotate(-2deg); }
+      88% { transform: rotate(2deg); }
+    }
+
+    @keyframes lid-hop {
+      0%, 100% { transform: translateY(0) rotate(0); }
+      45% { transform: translateY(-9px) rotate(-5deg); }
+    }
+
+    @keyframes pop-capsule {
+      0% { opacity: 0; transform: translateY(65px) rotate(-8deg) scale(.65); }
+      35% { opacity: 1; transform: translateY(-8px) rotate(12deg) scale(1.08); }
+      100% { opacity: 1; transform: translateY(5px) rotate(-7deg) scale(1); }
+    }
+
+    .result-card {
+      position: relative;
+      z-index: 1;
+      width: min(100%, 310px);
+      min-height: 94px;
+      margin: 0 auto 14px;
+      padding: 13px 13px 12px;
+      border: 2px solid var(--line);
+      border-radius: 21px;
+      background: rgba(255, 254, 248, .82);
+      box-shadow: 3px 4px 0 rgba(43,38,48,.12);
+      text-align: left;
+    }
+
+    .result-empty {
+      text-align: center;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.25;
+      padding-top: 10px;
+    }
+
+    .result-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 4px 0;
+      padding: 7px 8px;
+      border-radius: 15px;
+      background: rgba(255, 215, 232, .34);
+    }
+
+    .result-line:nth-child(even) { background: rgba(185, 233, 255, .34); }
+
+    .result-cat {
+      flex: 0 0 auto;
+      min-width: 44px;
+      padding: 3px 7px 2px;
+      border: 1.3px solid rgba(43,38,48,.55);
+      border-radius: 999px;
+      background: #fffef8;
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1;
+    }
+
+    .result-text {
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 1.1;
+      word-break: keep-all;
+    }
+
+    .main-controls {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .draw-btn {
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      border: 2.2px solid var(--line);
+      background: radial-gradient(circle at 32% 24%, #fff 0 9%, transparent 10%), linear-gradient(135deg, #ff86bd, #bf9fff);
+      color: #fffdf8;
+      text-shadow: 1px 1px 0 rgba(43,38,48,.4);
+      box-shadow: 4px 5px 0 rgba(43,38,48,.17);
+      font-weight: 700;
+      font-size: 23px;
+      letter-spacing: -.03em;
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+    }
+
+    .draw-btn:disabled { opacity: .58; filter: grayscale(.2); cursor: default; }
+
+    .mini-note {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 9px;
+      min-height: 18px;
+    }
+
+    .filter-chipline {
+      position: relative;
+      z-index: 1;
+      margin: 14px auto 0;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 5px;
+      max-width: 310px;
+      min-height: 22px;
+    }
+
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1.4px solid rgba(43,38,48,.55);
+      background: rgba(255,255,255,.62);
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(39, 34, 43, .22);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 12px;
+      z-index: 20;
+    }
+
+    .overlay.is-open { display: flex; }
+
+    .sheet {
+      width: min(100%, 430px);
+      max-height: min(78vh, 660px);
+      overflow: auto;
+      border: 2px solid var(--line);
+      border-radius: 25px;
+      background: linear-gradient(180deg, #fffef8, #fff7fd);
+      box-shadow: 6px 8px 0 rgba(43, 38, 48, .18);
+      padding: 12px;
+      animation: sheet-up .18s ease-out;
+    }
+
+    @keyframes sheet-up {
+      from { transform: translateY(12px); opacity: .7; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .sheet-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 2px 2px 10px;
+      position: sticky;
+      top: 0;
+      background: linear-gradient(180deg, #fffef8 78%, rgba(255,254,248,0));
+      z-index: 2;
+    }
+
+    .sheet-title {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: -.02em;
+    }
+
+    .sheet-title small {
+      color: var(--muted);
+      font-weight: 400;
+      font-size: 13px;
+    }
+
+    .section {
+      border: 1.7px solid rgba(43,38,48,.8);
+      border-radius: 19px;
+      background: rgba(255,255,255,.5);
+      padding: 10px;
+      margin-bottom: 10px;
+      box-shadow: 2px 3px 0 rgba(43,38,48,.08);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .cat-row {
+      border: 1.5px solid rgba(43,38,48,.65);
+      border-radius: 17px;
+      background: #fffdf7;
+      padding: 9px;
+      margin-bottom: 8px;
+    }
+
+    .cat-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+
+    .cat-name {
+      font-weight: 700;
+      font-size: 17px;
+      line-height: 1;
+    }
+
+    .cat-count {
+      color: var(--muted);
+      font-size: 12px;
+      margin-left: 4px;
+      font-weight: 400;
+    }
+
+    .cat-actions {
+      display: flex;
+      gap: 5px;
+      flex: 0 0 auto;
+    }
+
+    .tiny-btn {
+      min-width: 27px;
+      height: 27px;
+      padding: 0 8px;
+      border-radius: 999px;
+      border: 1.5px solid var(--line);
+      background: var(--yellow);
+      box-shadow: 1.6px 2px 0 rgba(43,38,48,.12);
+      font-size: 13px;
+      line-height: 1;
+      display: inline-grid;
+      place-items: center;
+    }
+
+    .tiny-btn.soft { background: var(--pink2); }
+    .tiny-btn.blue { background: var(--blue); }
+    .tiny-btn.ghost { background: #fff; color: var(--muted); }
+
+    .item-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+
+    .item-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      max-width: 100%;
+      padding: 4px 6px 4px 9px;
+      border-radius: 999px;
+      border: 1.3px solid rgba(43,38,48,.56);
+      background: rgba(255, 215, 232, .42);
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .item-pill:nth-child(3n+2) { background: rgba(185, 233, 255, .42); }
+    .item-pill:nth-child(3n) { background: rgba(201, 247, 223, .42); }
+
+    .item-name {
+      max-width: 210px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .x-btn {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.2px solid rgba(43,38,48,.7);
+      background: rgba(255,255,255,.72);
+      font-size: 12px;
+      line-height: 1;
+      display: grid;
+      place-items: center;
+      padding: 0;
+    }
+
+    .mini-form {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mini-input {
+      width: 100%;
+      height: 31px;
+      border: 1.6px solid var(--line);
+      border-radius: 999px;
+      padding: 0 11px;
+      background: rgba(255,255,255,.82);
+      outline: none;
+      font-size: 15px;
+      box-shadow: inset 1px 1px 0 rgba(43,38,48,.05);
+    }
+
+    .mini-input:focus { background: #fff; box-shadow: 0 0 0 3px rgba(189, 167, 255, .20); }
+
+    .filter-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 9px;
+      border: 1.5px solid rgba(43,38,48,.65);
+      border-radius: 17px;
+      background: rgba(255,255,255,.58);
+      margin-bottom: 7px;
+    }
+
+    .filter-name {
+      font-weight: 700;
+      font-size: 17px;
+      line-height: 1;
+    }
+
+    .filter-sub {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.1;
+    }
+
+    .circle-toggle {
+      width: 27px;
+      height: 27px;
+      border-radius: 50%;
+      border: 2px solid var(--line);
+      background: #fff;
+      box-shadow: 1.5px 2px 0 rgba(43,38,48,.14);
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .filter-option.is-on .circle-toggle {
+      background: linear-gradient(135deg, var(--pink), var(--violet));
+    }
+
+    .filter-option.is-on .circle-toggle:after {
+      content: '✓';
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #fffdf8;
+      font-weight: 700;
+      font-size: 17px;
+      text-shadow: 1px 1px 0 rgba(43,38,48,.35);
+    }
+
+    .helper {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.25;
+      margin: 2px 3px 9px;
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 7px;
+      padding-top: 3px;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%) translateY(12px);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 40;
+      border: 1.6px solid var(--line);
+      border-radius: 999px;
+      background: #fffef8;
+      box-shadow: 3px 4px 0 rgba(43,38,48,.14);
+      padding: 7px 12px;
+      font-size: 14px;
+      transition: .18s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 360px) {
+      .app { padding: 11px 10px 20px; }
+      .stage { min-height: 475px; padding-left: 12px; padding-right: 12px; }
+      .brand-title { font-size: 16px; }
+      .round-mini { width: 32px; height: 32px; }
+      .jar-wrap { margin-top: 25px; }
+      .draw-btn { width: 80px; height: 80px; font-size: 21px; }
+      .result-text { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand" aria-label="앱 제목">
+        <span class="brand-dot"></span>
+        <span class="brand-title">혼자 가챠</span>
+      </div>
+      <div class="top-actions">
+        <button class="round-mini" id="openFilter" type="button" aria-label="뽑기 카테고리 설정">◌</button>
+        <button class="round-mini" id="openSettings" type="button" aria-label="캡슐 설정">＋</button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <span class="sticker s1">✦</span>
+      <span class="sticker s2">♡</span>
+      <span class="sticker s3">✧</span>
+      <span class="sticker s4">☁</span>
+
+      <div class="main-copy">
+        <span class="tiny-label">오늘 혼자 뭐하지?</span>
+      </div>
+
+      <section class="jar-wrap" id="jarWrap" aria-hidden="true">
+        <div class="jar-lid"></div>
+        <div class="jar">
+          <div class="capsule c1"></div>
+          <div class="capsule c2"></div>
+          <div class="capsule c3"></div>
+          <div class="capsule c4"></div>
+        </div>
+        <div class="picked-capsule"></div>
+      </section>
+
+      <section class="result-card" id="resultCard" aria-live="polite">
+        <div class="result-empty">캡슐을 넣고<br />동그란 버튼만 누르기</div>
+      </section>
+
+      <div class="main-controls">
+        <button class="round-mini" id="quickAdd" type="button" aria-label="캡슐 추가">＋</button>
+        <button class="draw-btn" id="drawBtn" type="button">draw</button>
+        <button class="round-mini" id="quickFilter" type="button" aria-label="카테고리 선택">◌</button>
+      </div>
+
+      <div class="filter-chipline" id="chipLine"></div>
+      <div class="mini-note" id="miniNote"></div>
+    </main>
+  </div>
+
+  <div class="overlay" id="filterOverlay" aria-hidden="true">
+    <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="filterTitle">
+      <div class="sheet-head">
+        <div class="sheet-title" id="filterTitle">뽑기 설정 <small>비우면 전체 랜덤</small></div>
+        <button class="round-mini" id="closeFilter" type="button" aria-label="닫기">×</button>
+      </div>
+      <p class="helper">선택한 카테고리마다 캡슐이 하나씩 나옵니다. 예: 장소 + 종류.</p>
+      <div id="filterList"></div>
+      <div class="footer-row">
+        <button class="tiny-btn ghost" id="clearFilter" type="button">선택 해제</button>
+        <button class="tiny-btn blue" id="doneFilter" type="button">완료</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="overlay" id="settingsOverlay" aria-hidden="true">
+    <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="sheet-head">
+        <div class="sheet-title" id="settingsTitle">캡슐장 <small>카테고리도 수정 가능</small></div>
+        <button class="round-mini" id="closeSettings" type="button" aria-label="닫기">×</button>
+      </div>
+
+      <section class="section">
+        <div class="section-title">카테고리 추가</div>
+        <form class="mini-form" id="addCategoryForm">
+          <input class="mini-input" id="categoryInput" type="text" maxlength="18" placeholder="예: 날씨, 예산, 기분" />
+          <button class="tiny-btn" type="submit">＋</button>
+        </form>
+      </section>
+
+      <section class="section">
+        <div class="section-title">내 캡슐</div>
+        <div id="categoryList"></div>
+      </section>
+    </section>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STORAGE_KEY = 'solo-gacha-stickerbook-v1';
+
+    const defaultState = {
+      selectedCategoryIds: [],
+      categories: [
+        {
+          id: 'place',
+          name: '장소',
+          items: ['동네 카페', '서점', '공원 벤치', '문구점', '강변 산책길']
+        },
+        {
+          id: 'kind',
+          name: '종류',
+          items: ['디저트 사먹기', '책 10쪽 읽기', '사진 한 장 찍기', '멍때리기', '산책 20분']
+        }
+      ]
+    };
+
+    let state = loadState();
+    let lastDraw = [];
+
+    const $ = (selector) => document.querySelector(selector);
+    const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+
+    const els = {
+      jarWrap: $('#jarWrap'),
+      resultCard: $('#resultCard'),
+      chipLine: $('#chipLine'),
+      miniNote: $('#miniNote'),
+      drawBtn: $('#drawBtn'),
+      openFilter: $('#openFilter'),
+      quickFilter: $('#quickFilter'),
+      closeFilter: $('#closeFilter'),
+      doneFilter: $('#doneFilter'),
+      clearFilter: $('#clearFilter'),
+      filterOverlay: $('#filterOverlay'),
+      filterList: $('#filterList'),
+      openSettings: $('#openSettings'),
+      quickAdd: $('#quickAdd'),
+      closeSettings: $('#closeSettings'),
+      settingsOverlay: $('#settingsOverlay'),
+      addCategoryForm: $('#addCategoryForm'),
+      categoryInput: $('#categoryInput'),
+      categoryList: $('#categoryList'),
+      toast: $('#toast')
+    };
+
+    function uid() {
+      return 'c' + Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-3);
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return structuredClone(defaultState);
+        const parsed = JSON.parse(raw);
+        if (!parsed || !Array.isArray(parsed.categories)) return structuredClone(defaultState);
+        parsed.categories = parsed.categories
+          .filter(cat => cat && cat.id && typeof cat.name === 'string')
+          .map(cat => ({
+            id: String(cat.id),
+            name: String(cat.name).trim() || '무제',
+            items: Array.isArray(cat.items) ? cat.items.map(item => String(item).trim()).filter(Boolean) : []
+          }));
+        if (!parsed.categories.length) parsed.categories = structuredClone(defaultState.categories);
+        parsed.selectedCategoryIds = Array.isArray(parsed.selectedCategoryIds) ? parsed.selectedCategoryIds : [];
+        parsed.selectedCategoryIds = parsed.selectedCategoryIds.filter(id => parsed.categories.some(cat => cat.id === id));
+        return parsed;
+      } catch (error) {
+        return structuredClone(defaultState);
+      }
+    }
+
+    function saveState() {
+      state.selectedCategoryIds = state.selectedCategoryIds.filter(id => state.categories.some(cat => cat.id === id));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      renderAll();
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function randomFrom(array) {
+      return array[Math.floor(Math.random() * array.length)];
+    }
+
+    function openOverlay(overlay) {
+      overlay.classList.add('is-open');
+      overlay.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeOverlay(overlay) {
+      overlay.classList.remove('is-open');
+      overlay.setAttribute('aria-hidden', 'true');
+    }
+
+    function showToast(text) {
+      els.toast.textContent = text;
+      els.toast.classList.add('show');
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => els.toast.classList.remove('show'), 1300);
+    }
+
+    function renderAll() {
+      renderChips();
+      renderFilterList();
+      renderCategoryList();
+      renderMiniNote();
+    }
+
+    function renderChips() {
+      const selected = state.categories.filter(cat => state.selectedCategoryIds.includes(cat.id));
+      if (!selected.length) {
+        els.chipLine.innerHTML = '<span class="filter-chip">전체 랜덤</span>';
+        return;
+      }
+      els.chipLine.innerHTML = selected.map(cat => `<span class="filter-chip">◌ ${escapeHtml(cat.name)}</span>`).join('');
+    }
+
+    function renderMiniNote() {
+      const total = state.categories.reduce((sum, cat) => sum + cat.items.length, 0);
+      const catCount = state.categories.length;
+      els.miniNote.textContent = `${catCount} categories · ${total} capsules`;
+    }
+
+    function renderFilterList() {
+      if (!state.categories.length) {
+        els.filterList.innerHTML = '<p class="helper">카테고리를 먼저 추가해줘.</p>';
+        return;
+      }
+      els.filterList.innerHTML = state.categories.map(cat => {
+        const isOn = state.selectedCategoryIds.includes(cat.id);
+        return `
+          <button class="filter-option ${isOn ? 'is-on' : ''}" type="button" data-filter-id="${escapeHtml(cat.id)}">
+            <span>
+              <span class="filter-name">${escapeHtml(cat.name)}</span>
+              <span class="filter-sub">${cat.items.length} capsules</span>
+            </span>
+            <span class="circle-toggle" aria-hidden="true"></span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function renderCategoryList() {
+      if (!state.categories.length) {
+        els.categoryList.innerHTML = '<p class="helper">아직 카테고리가 없습니다.</p>';
+        return;
+      }
+
+      els.categoryList.innerHTML = state.categories.map(cat => `
+        <div class="cat-row" data-cat-id="${escapeHtml(cat.id)}">
+          <div class="cat-top">
+            <div class="cat-name">${escapeHtml(cat.name)} <span class="cat-count">${cat.items.length}</span></div>
+            <div class="cat-actions">
+              <button class="tiny-btn blue" type="button" data-action="rename-category">수정</button>
+              <button class="tiny-btn soft" type="button" data-action="delete-category">삭제</button>
+            </div>
+          </div>
+          <div class="item-list">
+            ${cat.items.length ? cat.items.map((item, index) => `
+              <span class="item-pill" title="눌러서 수정">
+                <button class="x-btn" type="button" data-action="edit-item" data-index="${index}" aria-label="캡슐 수정">✎</button>
+                <span class="item-name">${escapeHtml(item)}</span>
+                <button class="x-btn" type="button" data-action="delete-item" data-index="${index}" aria-label="캡슐 삭제">×</button>
+              </span>
+            `).join('') : '<span class="helper">비어있음</span>'}
+          </div>
+          <form class="mini-form" data-action="add-item-form">
+            <input class="mini-input" type="text" maxlength="32" placeholder="캡슐 추가" />
+            <button class="tiny-btn" type="submit">＋</button>
+          </form>
+        </div>
+      `).join('');
+    }
+
+    function draw() {
+      const selectedCats = state.categories.filter(cat => state.selectedCategoryIds.includes(cat.id));
+      let result = [];
+
+      if (selectedCats.length) {
+        const emptyCats = selectedCats.filter(cat => !cat.items.length);
+        if (emptyCats.length) {
+          renderEmptyResult(`${emptyCats.map(cat => cat.name).join(', ')} 캡슐이 비어있어`);
+          return;
+        }
+        result = selectedCats.map(cat => ({ category: cat.name, item: randomFrom(cat.items) }));
+      } else {
+        const pool = state.categories.flatMap(cat => cat.items.map(item => ({ category: cat.name, item })));
+        if (!pool.length) {
+          renderEmptyResult('캡슐을 먼저 넣어줘');
+          return;
+        }
+        result = [randomFrom(pool)];
+      }
+
+      lastDraw = result;
+      els.drawBtn.disabled = true;
+      els.jarWrap.classList.remove('is-drawing');
+      void els.jarWrap.offsetWidth;
+      els.jarWrap.classList.add('is-drawing');
+      setTimeout(() => {
+        renderResult(result);
+        els.drawBtn.disabled = false;
+      }, 520);
+    }
+
+    function renderEmptyResult(text) {
+      els.resultCard.innerHTML = `<div class="result-empty">${escapeHtml(text)}</div>`;
+    }
+
+    function renderResult(result) {
+      els.resultCard.innerHTML = result.map(part => `
+        <div class="result-line">
+          <span class="result-cat">${escapeHtml(part.category)}</span>
+          <span class="result-text">${escapeHtml(part.item)}</span>
+        </div>
+      `).join('');
+    }
+
+    function addCategory(name) {
+      const clean = name.trim();
+      if (!clean) return;
+      state.categories.push({ id: uid(), name: clean, items: [] });
+      saveState();
+      showToast('카테고리 추가됨');
+    }
+
+    function renameCategory(catId) {
+      const cat = state.categories.find(item => item.id === catId);
+      if (!cat) return;
+      const next = prompt('카테고리 이름', cat.name);
+      if (next === null) return;
+      const clean = next.trim();
+      if (!clean) return;
+      cat.name = clean.slice(0, 18);
+      saveState();
+    }
+
+    function deleteCategory(catId) {
+      const cat = state.categories.find(item => item.id === catId);
+      if (!cat) return;
+      if (!confirm(`'${cat.name}' 카테고리를 삭제할까?`)) return;
+      state.categories = state.categories.filter(item => item.id !== catId);
+      state.selectedCategoryIds = state.selectedCategoryIds.filter(id => id !== catId);
+      saveState();
+      showToast('삭제됨');
+    }
+
+    function addItem(catId, value) {
+      const cat = state.categories.find(item => item.id === catId);
+      if (!cat) return;
+      const clean = value.trim();
+      if (!clean) return;
+      cat.items.push(clean.slice(0, 32));
+      saveState();
+      showToast('캡슐 추가됨');
+    }
+
+    function editItem(catId, index) {
+      const cat = state.categories.find(item => item.id === catId);
+      if (!cat || !cat.items[index]) return;
+      const next = prompt('캡슐 수정', cat.items[index]);
+      if (next === null) return;
+      const clean = next.trim();
+      if (!clean) return;
+      cat.items[index] = clean.slice(0, 32);
+      saveState();
+    }
+
+    function deleteItem(catId, index) {
+      const cat = state.categories.find(item => item.id === catId);
+      if (!cat) return;
+      cat.items.splice(index, 1);
+      saveState();
+    }
+
+    function toggleFilter(catId) {
+      if (state.selectedCategoryIds.includes(catId)) {
+        state.selectedCategoryIds = state.selectedCategoryIds.filter(id => id !== catId);
+      } else {
+        state.selectedCategoryIds.push(catId);
+      }
+      saveState();
+    }
+
+    els.drawBtn.addEventListener('click', draw);
+    els.openFilter.addEventListener('click', () => openOverlay(els.filterOverlay));
+    els.quickFilter.addEventListener('click', () => openOverlay(els.filterOverlay));
+    els.closeFilter.addEventListener('click', () => closeOverlay(els.filterOverlay));
+    els.doneFilter.addEventListener('click', () => closeOverlay(els.filterOverlay));
+    els.clearFilter.addEventListener('click', () => {
+      state.selectedCategoryIds = [];
+      saveState();
+    });
+
+    els.openSettings.addEventListener('click', () => openOverlay(els.settingsOverlay));
+    els.quickAdd.addEventListener('click', () => openOverlay(els.settingsOverlay));
+    els.closeSettings.addEventListener('click', () => closeOverlay(els.settingsOverlay));
+
+    els.filterOverlay.addEventListener('click', (event) => {
+      if (event.target === els.filterOverlay) closeOverlay(els.filterOverlay);
+    });
+
+    els.settingsOverlay.addEventListener('click', (event) => {
+      if (event.target === els.settingsOverlay) closeOverlay(els.settingsOverlay);
+    });
+
+    els.filterList.addEventListener('click', (event) => {
+      const option = event.target.closest('[data-filter-id]');
+      if (!option) return;
+      toggleFilter(option.dataset.filterId);
+    });
+
+    els.addCategoryForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      addCategory(els.categoryInput.value);
+      els.categoryInput.value = '';
+      els.categoryInput.focus();
+    });
+
+    els.categoryList.addEventListener('submit', (event) => {
+      const form = event.target.closest('[data-action="add-item-form"]');
+      if (!form) return;
+      event.preventDefault();
+      const row = form.closest('[data-cat-id]');
+      const input = form.querySelector('input');
+      addItem(row.dataset.catId, input.value);
+      input.value = '';
+      input.focus();
+    });
+
+    els.categoryList.addEventListener('click', (event) => {
+      const button = event.target.closest('button[data-action]');
+      if (!button) return;
+      const row = button.closest('[data-cat-id]');
+      if (!row) return;
+      const catId = row.dataset.catId;
+      const action = button.dataset.action;
+      const index = Number(button.dataset.index);
+
+      if (action === 'rename-category') renameCategory(catId);
+      if (action === 'delete-category') deleteCategory(catId);
+      if (action === 'edit-item') editItem(catId, index);
+      if (action === 'delete-item') deleteItem(catId, index);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      closeOverlay(els.filterOverlay);
+      closeOverlay(els.settingsOverlay);
+    });
+
+    renderAll();
+  </script>
+</body>
+</html>
