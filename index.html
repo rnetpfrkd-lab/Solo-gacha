@@ -38,7 +38,7 @@
       overflow-x: hidden;
     }
 
-    button, input {
+    button, input, select {
       font: inherit;
       color: inherit;
     }
@@ -115,7 +115,8 @@
     .round-mini:active,
     .draw-btn:active,
     .tiny-btn:active,
-    .pill:active {
+    .pill:active,
+    .value-toggle:active {
       transform: translate(2px, 2px);
       box-shadow: 0 0 0 rgba(43, 38, 48, 0);
     }
@@ -322,40 +323,42 @@
       color: var(--muted);
       font-size: 17px;
       line-height: 1.25;
-      padding-top: 10px;
+      padding-top: 16px;
     }
 
-    .result-line {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 4px 0;
-      padding: 7px 8px;
-      border-radius: 15px;
-      background: rgba(255, 215, 232, .34);
-    }
-
-    .result-line:nth-child(even) { background: rgba(185, 233, 255, .34); }
-
-    .result-cat {
-      flex: 0 0 auto;
-      min-width: 44px;
-      padding: 3px 7px 2px;
-      border: 1.3px solid rgba(43,38,48,.55);
-      border-radius: 999px;
-      background: #fffef8;
-      font-size: 13px;
-      color: var(--muted);
+    .result-task {
+      font-weight: 700;
+      font-size: 22px;
+      line-height: 1.14;
+      word-break: keep-all;
       text-align: center;
+      padding: 7px 4px 9px;
+    }
+
+    .result-tags,
+    .tagline {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .tag-chip,
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1.4px solid rgba(43,38,48,.55);
+      background: rgba(255,255,255,.62);
+      font-size: 13px;
       line-height: 1;
     }
 
-    .result-text {
-      font-weight: 700;
-      font-size: 20px;
-      line-height: 1.1;
-      word-break: keep-all;
-    }
+    .tag-chip:nth-child(3n+1) { background: rgba(255, 215, 232, .44); }
+    .tag-chip:nth-child(3n+2) { background: rgba(185, 233, 255, .44); }
+    .tag-chip:nth-child(3n) { background: rgba(201, 247, 223, .44); }
 
     .main-controls {
       position: relative;
@@ -406,18 +409,6 @@
       min-height: 22px;
     }
 
-    .filter-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      border: 1.4px solid rgba(43,38,48,.55);
-      background: rgba(255,255,255,.62);
-      font-size: 13px;
-      line-height: 1;
-    }
-
     .overlay {
       position: fixed;
       inset: 0;
@@ -433,7 +424,7 @@
 
     .sheet {
       width: min(100%, 430px);
-      max-height: min(78vh, 660px);
+      max-height: min(82vh, 690px);
       overflow: auto;
       border: 2px solid var(--line);
       border-radius: 25px;
@@ -493,7 +484,9 @@
       margin-bottom: 8px;
     }
 
-    .cat-row {
+    .cat-row,
+    .capsule-row,
+    .filter-group {
       border: 1.5px solid rgba(43,38,48,.65);
       border-radius: 17px;
       background: #fffdf7;
@@ -501,7 +494,8 @@
       margin-bottom: 8px;
     }
 
-    .cat-top {
+    .cat-top,
+    .capsule-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -509,10 +503,13 @@
       margin-bottom: 7px;
     }
 
-    .cat-name {
+    .cat-name,
+    .capsule-name,
+    .filter-name {
       font-weight: 700;
       font-size: 17px;
-      line-height: 1;
+      line-height: 1.05;
+      word-break: keep-all;
     }
 
     .cat-count {
@@ -522,7 +519,8 @@
       font-weight: 400;
     }
 
-    .cat-actions {
+    .cat-actions,
+    .capsule-actions {
       display: flex;
       gap: 5px;
       flex: 0 0 auto;
@@ -544,16 +542,21 @@
 
     .tiny-btn.soft { background: var(--pink2); }
     .tiny-btn.blue { background: var(--blue); }
+    .tiny-btn.mint { background: var(--mint); }
     .tiny-btn.ghost { background: #fff; color: var(--muted); }
 
-    .item-list {
+    .item-list,
+    .value-list,
+    .value-grid,
+    .tag-selects {
       display: flex;
       flex-wrap: wrap;
       gap: 5px;
       margin-bottom: 8px;
     }
 
-    .item-pill {
+    .item-pill,
+    .value-pill {
       display: inline-flex;
       align-items: center;
       gap: 5px;
@@ -566,11 +569,13 @@
       line-height: 1;
     }
 
-    .item-pill:nth-child(3n+2) { background: rgba(185, 233, 255, .42); }
-    .item-pill:nth-child(3n) { background: rgba(201, 247, 223, .42); }
+    .item-pill:nth-child(3n+2),
+    .value-pill:nth-child(3n+2) { background: rgba(185, 233, 255, .42); }
+    .item-pill:nth-child(3n),
+    .value-pill:nth-child(3n) { background: rgba(201, 247, 223, .42); }
 
     .item-name {
-      max-width: 210px;
+      max-width: 195px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -593,9 +598,11 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      margin-top: 6px;
     }
 
-    .mini-input {
+    .mini-input,
+    .mini-select {
       width: 100%;
       height: 31px;
       border: 1.6px solid var(--line);
@@ -607,65 +614,53 @@
       box-shadow: inset 1px 1px 0 rgba(43,38,48,.05);
     }
 
-    .mini-input:focus { background: #fff; box-shadow: 0 0 0 3px rgba(189, 167, 255, .20); }
+    .mini-input:focus,
+    .mini-select:focus { background: #fff; box-shadow: 0 0 0 3px rgba(189, 167, 255, .20); }
 
-    .filter-option {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 10px 9px;
-      border: 1.5px solid rgba(43,38,48,.65);
-      border-radius: 17px;
-      background: rgba(255,255,255,.58);
-      margin-bottom: 7px;
+    .tag-select {
+      display: grid;
+      gap: 3px;
+      flex: 1 1 118px;
+      min-width: 118px;
     }
 
-    .filter-name {
-      font-weight: 700;
-      font-size: 17px;
+    .tag-select label {
+      color: var(--muted);
+      font-size: 12px;
+      padding-left: 6px;
       line-height: 1;
     }
 
-    .filter-sub {
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.1;
+    .value-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 28px;
+      padding: 0 9px 0 5px;
+      border-radius: 999px;
+      border: 1.5px solid rgba(43,38,48,.65);
+      background: rgba(255,255,255,.6);
+      box-shadow: 1.4px 1.8px 0 rgba(43,38,48,.09);
+      font-size: 14px;
+      line-height: 1;
     }
 
-    .circle-toggle {
-      width: 27px;
-      height: 27px;
+    .dot-toggle {
+      width: 17px;
+      height: 17px;
       border-radius: 50%;
-      border: 2px solid var(--line);
+      border: 1.5px solid var(--line);
       background: #fff;
-      box-shadow: 1.5px 2px 0 rgba(43,38,48,.14);
-      position: relative;
+      display: inline-block;
       flex: 0 0 auto;
     }
 
-    .filter-option.is-on .circle-toggle {
+    .value-toggle.is-on {
+      background: rgba(255, 215, 232, .7);
+    }
+
+    .value-toggle.is-on .dot-toggle {
       background: linear-gradient(135deg, var(--pink), var(--violet));
-    }
-
-    .filter-option.is-on .circle-toggle:after {
-      content: '✓';
-      position: absolute;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      color: #fffdf8;
-      font-weight: 700;
-      font-size: 17px;
-      text-shadow: 1px 1px 0 rgba(43,38,48,.35);
-    }
-
-    .helper {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.25;
-      margin: 2px 3px 9px;
     }
 
     .footer-row {
@@ -704,7 +699,7 @@
       .round-mini { width: 32px; height: 32px; }
       .jar-wrap { margin-top: 25px; }
       .draw-btn { width: 80px; height: 80px; font-size: 21px; }
-      .result-text { font-size: 18px; }
+      .result-task { font-size: 20px; }
     }
   </style>
 </head>
@@ -716,8 +711,8 @@
         <span class="brand-title">혼자 가챠</span>
       </div>
       <div class="top-actions">
-        <button class="round-mini" id="openFilter" type="button" aria-label="뽑기 카테고리 설정">◌</button>
-        <button class="round-mini" id="openSettings" type="button" aria-label="캡슐 설정">＋</button>
+        <button class="round-mini" id="openFilter" type="button" aria-label="필터">◌</button>
+        <button class="round-mini" id="openSettings" type="button" aria-label="설정">＋</button>
       </div>
     </header>
 
@@ -743,13 +738,13 @@
       </section>
 
       <section class="result-card" id="resultCard" aria-live="polite">
-        <div class="result-empty">캡슐을 넣고<br />동그란 버튼만 누르기</div>
+        <div class="result-empty">draw</div>
       </section>
 
       <div class="main-controls">
         <button class="round-mini" id="quickAdd" type="button" aria-label="캡슐 추가">＋</button>
         <button class="draw-btn" id="drawBtn" type="button">draw</button>
-        <button class="round-mini" id="quickFilter" type="button" aria-label="카테고리 선택">◌</button>
+        <button class="round-mini" id="quickFilter" type="button" aria-label="필터">◌</button>
       </div>
 
       <div class="filter-chipline" id="chipLine"></div>
@@ -760,14 +755,13 @@
   <div class="overlay" id="filterOverlay" aria-hidden="true">
     <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="filterTitle">
       <div class="sheet-head">
-        <div class="sheet-title" id="filterTitle">뽑기 설정 <small>비우면 전체 랜덤</small></div>
+        <div class="sheet-title" id="filterTitle">필터 <small id="filterSmall"></small></div>
         <button class="round-mini" id="closeFilter" type="button" aria-label="닫기">×</button>
       </div>
-      <p class="helper">선택한 카테고리마다 캡슐이 하나씩 나옵니다. 예: 장소 + 종류.</p>
       <div id="filterList"></div>
       <div class="footer-row">
-        <button class="tiny-btn ghost" id="clearFilter" type="button">선택 해제</button>
-        <button class="tiny-btn blue" id="doneFilter" type="button">완료</button>
+        <button class="tiny-btn ghost" id="clearFilter" type="button">reset</button>
+        <button class="tiny-btn blue" id="doneFilter" type="button">done</button>
       </div>
     </section>
   </div>
@@ -775,21 +769,32 @@
   <div class="overlay" id="settingsOverlay" aria-hidden="true">
     <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
       <div class="sheet-head">
-        <div class="sheet-title" id="settingsTitle">캡슐장 <small>카테고리도 수정 가능</small></div>
+        <div class="sheet-title" id="settingsTitle">캡슐장 <small>edit</small></div>
         <button class="round-mini" id="closeSettings" type="button" aria-label="닫기">×</button>
       </div>
 
       <section class="section">
-        <div class="section-title">카테고리 추가</div>
+        <div class="section-title">카테고리</div>
         <form class="mini-form" id="addCategoryForm">
-          <input class="mini-input" id="categoryInput" type="text" maxlength="18" placeholder="예: 날씨, 예산, 기분" />
+          <input class="mini-input" id="categoryInput" type="text" maxlength="18" placeholder="예: 장소, 종류, 예산" />
           <button class="tiny-btn" type="submit">＋</button>
+        </form>
+        <div id="categoryList" style="margin-top:8px;"></div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">캡슐</div>
+        <form id="addCapsuleForm">
+          <input class="mini-input" id="capsuleInput" type="text" maxlength="44" placeholder="할일" />
+          <div class="tag-selects" id="newCapsuleTags" style="margin-top:7px;"></div>
+          <div class="footer-row">
+            <button class="tiny-btn" type="submit">＋</button>
+          </div>
         </form>
       </section>
 
       <section class="section">
-        <div class="section-title">내 캡슐</div>
-        <div id="categoryList"></div>
+        <div id="capsuleList"></div>
       </section>
     </section>
   </div>
@@ -797,29 +802,43 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const STORAGE_KEY = 'solo-gacha-stickerbook-v1';
+    const STORAGE_KEY = 'solo-gacha-free-categories-v1';
 
     const defaultState = {
-      selectedCategoryIds: [],
+      selected: {},
       categories: [
         {
           id: 'place',
           name: '장소',
-          items: ['동네 카페', '서점', '공원 벤치', '문구점', '강변 산책길']
+          values: [
+            { id: 'p_namyangju', name: '남양주' },
+            { id: 'p_home', name: '내집' },
+            { id: 'p_seocho', name: '서초' }
+          ]
         },
         {
-          id: 'kind',
+          id: 'type',
           name: '종류',
-          items: ['디저트 사먹기', '책 10쪽 읽기', '사진 한 장 찍기', '멍때리기', '산책 20분']
+          values: [
+            { id: 't_groom', name: '그루밍' },
+            { id: 't_play', name: '놀기' },
+            { id: 't_walk', name: '산책' }
+          ]
         }
+      ],
+      capsules: [
+        { id: 'a1', text: '향 좋은 바디로션 바르기', tags: { place: 'p_home', type: 't_groom' } },
+        { id: 'a2', text: '손톱 정리하고 투명 매니큐어', tags: { place: 'p_home', type: 't_groom' } },
+        { id: 'a3', text: '카페에서 달달한 음료 하나', tags: { place: 'p_namyangju', type: 't_play' } },
+        { id: 'a4', text: '문구점 들러서 스티커 구경', tags: { place: 'p_seocho', type: 't_play' } },
+        { id: 'a5', text: '햇빛 적은 길로 20분 걷기', tags: { place: 'p_namyangju', type: 't_walk' } },
+        { id: 'a6', text: '팩 올리고 멍때리기', tags: { place: 'p_home', type: 't_groom' } }
       ]
     };
 
     let state = loadState();
-    let lastDraw = [];
 
     const $ = (selector) => document.querySelector(selector);
-    const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
     const els = {
       jarWrap: $('#jarWrap'),
@@ -834,6 +853,7 @@
       clearFilter: $('#clearFilter'),
       filterOverlay: $('#filterOverlay'),
       filterList: $('#filterList'),
+      filterSmall: $('#filterSmall'),
       openSettings: $('#openSettings'),
       quickAdd: $('#quickAdd'),
       closeSettings: $('#closeSettings'),
@@ -841,37 +861,73 @@
       addCategoryForm: $('#addCategoryForm'),
       categoryInput: $('#categoryInput'),
       categoryList: $('#categoryList'),
+      addCapsuleForm: $('#addCapsuleForm'),
+      capsuleInput: $('#capsuleInput'),
+      newCapsuleTags: $('#newCapsuleTags'),
+      capsuleList: $('#capsuleList'),
       toast: $('#toast')
     };
 
-    function uid() {
-      return 'c' + Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-3);
+    function clone(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function uid(prefix = 'id') {
+      return prefix + '_' + Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-3);
     }
 
     function loadState() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return structuredClone(defaultState);
+        if (!raw) return clone(defaultState);
         const parsed = JSON.parse(raw);
-        if (!parsed || !Array.isArray(parsed.categories)) return structuredClone(defaultState);
+        if (!parsed || !Array.isArray(parsed.categories) || !Array.isArray(parsed.capsules)) return clone(defaultState);
+        parsed.selected = parsed.selected && typeof parsed.selected === 'object' ? parsed.selected : {};
         parsed.categories = parsed.categories
           .filter(cat => cat && cat.id && typeof cat.name === 'string')
           .map(cat => ({
             id: String(cat.id),
             name: String(cat.name).trim() || '무제',
-            items: Array.isArray(cat.items) ? cat.items.map(item => String(item).trim()).filter(Boolean) : []
+            values: Array.isArray(cat.values)
+              ? cat.values.filter(v => v && v.id && typeof v.name === 'string').map(v => ({ id: String(v.id), name: String(v.name).trim() || '무제' }))
+              : []
           }));
-        if (!parsed.categories.length) parsed.categories = structuredClone(defaultState.categories);
-        parsed.selectedCategoryIds = Array.isArray(parsed.selectedCategoryIds) ? parsed.selectedCategoryIds : [];
-        parsed.selectedCategoryIds = parsed.selectedCategoryIds.filter(id => parsed.categories.some(cat => cat.id === id));
+        parsed.capsules = parsed.capsules
+          .filter(item => item && item.id && typeof item.text === 'string')
+          .map(item => ({ id: String(item.id), text: String(item.text).trim() || '무제', tags: item.tags && typeof item.tags === 'object' ? item.tags : {} }));
+        cleanState(parsed);
+        if (!parsed.categories.length) parsed.categories = clone(defaultState.categories);
         return parsed;
       } catch (error) {
-        return structuredClone(defaultState);
+        return clone(defaultState);
       }
     }
 
+    function cleanState(target = state) {
+      const categoryIds = new Set(target.categories.map(cat => cat.id));
+      const valueIdsByCat = Object.fromEntries(target.categories.map(cat => [cat.id, new Set(cat.values.map(v => v.id))]));
+
+      Object.keys(target.selected || {}).forEach(catId => {
+        if (!categoryIds.has(catId)) delete target.selected[catId];
+      });
+
+      target.categories.forEach(cat => {
+        const selected = Array.isArray(target.selected[cat.id]) ? target.selected[cat.id] : [];
+        target.selected[cat.id] = selected.filter(valueId => valueIdsByCat[cat.id].has(valueId));
+        if (!target.selected[cat.id].length) delete target.selected[cat.id];
+      });
+
+      target.capsules.forEach(capsule => {
+        const tags = capsule.tags && typeof capsule.tags === 'object' ? capsule.tags : {};
+        Object.keys(tags).forEach(catId => {
+          if (!categoryIds.has(catId) || !valueIdsByCat[catId].has(tags[catId])) delete tags[catId];
+        });
+        capsule.tags = tags;
+      });
+    }
+
     function saveState() {
-      state.selectedCategoryIds = state.selectedCategoryIds.filter(id => state.categories.some(cat => cat.id === id));
+      cleanState();
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       renderAll();
     }
@@ -889,6 +945,15 @@
       return array[Math.floor(Math.random() * array.length)];
     }
 
+    function getCategory(catId) {
+      return state.categories.find(cat => cat.id === catId);
+    }
+
+    function getValue(catId, valueId) {
+      const cat = getCategory(catId);
+      return cat ? cat.values.find(value => value.id === valueId) : null;
+    }
+
     function openOverlay(overlay) {
       overlay.classList.add('is-open');
       overlay.setAttribute('aria-hidden', 'false');
@@ -903,103 +968,152 @@
       els.toast.textContent = text;
       els.toast.classList.add('show');
       clearTimeout(showToast.timer);
-      showToast.timer = setTimeout(() => els.toast.classList.remove('show'), 1300);
+      showToast.timer = setTimeout(() => els.toast.classList.remove('show'), 1000);
+    }
+
+    function selectedEntries() {
+      return Object.entries(state.selected || {}).filter(([, valueIds]) => Array.isArray(valueIds) && valueIds.length);
+    }
+
+    function selectedCount() {
+      return selectedEntries().reduce((sum, [, values]) => sum + values.length, 0);
     }
 
     function renderAll() {
       renderChips();
+      renderMiniNote();
       renderFilterList();
       renderCategoryList();
-      renderMiniNote();
+      renderNewCapsuleTags();
+      renderCapsuleList();
     }
 
     function renderChips() {
-      const selected = state.categories.filter(cat => state.selectedCategoryIds.includes(cat.id));
-      if (!selected.length) {
-        els.chipLine.innerHTML = '<span class="filter-chip">전체 랜덤</span>';
-        return;
-      }
-      els.chipLine.innerHTML = selected.map(cat => `<span class="filter-chip">◌ ${escapeHtml(cat.name)}</span>`).join('');
+      const chips = [];
+      selectedEntries().forEach(([catId, valueIds]) => {
+        const cat = getCategory(catId);
+        if (!cat) return;
+        valueIds.forEach(valueId => {
+          const value = getValue(catId, valueId);
+          if (value) chips.push(`<span class="filter-chip">${escapeHtml(cat.name)} · ${escapeHtml(value.name)}</span>`);
+        });
+      });
+      els.chipLine.innerHTML = chips.length ? chips.join('') : '<span class="filter-chip">전체 랜덤</span>';
     }
 
     function renderMiniNote() {
-      const total = state.categories.reduce((sum, cat) => sum + cat.items.length, 0);
-      const catCount = state.categories.length;
-      els.miniNote.textContent = `${catCount} categories · ${total} capsules`;
+      els.miniNote.textContent = `${state.categories.length} filters · ${state.capsules.length} capsules`;
     }
 
     function renderFilterList() {
+      els.filterSmall.textContent = selectedCount() ? `${selectedCount()} on` : 'all';
       if (!state.categories.length) {
-        els.filterList.innerHTML = '<p class="helper">카테고리를 먼저 추가해줘.</p>';
+        els.filterList.innerHTML = '';
         return;
       }
-      els.filterList.innerHTML = state.categories.map(cat => {
-        const isOn = state.selectedCategoryIds.includes(cat.id);
-        return `
-          <button class="filter-option ${isOn ? 'is-on' : ''}" type="button" data-filter-id="${escapeHtml(cat.id)}">
-            <span>
-              <span class="filter-name">${escapeHtml(cat.name)}</span>
-              <span class="filter-sub">${cat.items.length} capsules</span>
-            </span>
-            <span class="circle-toggle" aria-hidden="true"></span>
-          </button>
-        `;
-      }).join('');
+      els.filterList.innerHTML = state.categories.map(cat => `
+        <div class="filter-group" data-filter-cat-id="${escapeHtml(cat.id)}">
+          <div class="section-title">${escapeHtml(cat.name)}</div>
+          <div class="value-grid">
+            ${cat.values.map(value => {
+              const on = Array.isArray(state.selected[cat.id]) && state.selected[cat.id].includes(value.id);
+              return `
+                <button class="value-toggle ${on ? 'is-on' : ''}" type="button" data-filter-value-id="${escapeHtml(value.id)}">
+                  <span class="dot-toggle"></span><span>${escapeHtml(value.name)}</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `).join('');
     }
 
     function renderCategoryList() {
       if (!state.categories.length) {
-        els.categoryList.innerHTML = '<p class="helper">아직 카테고리가 없습니다.</p>';
+        els.categoryList.innerHTML = '';
         return;
       }
-
       els.categoryList.innerHTML = state.categories.map(cat => `
         <div class="cat-row" data-cat-id="${escapeHtml(cat.id)}">
           <div class="cat-top">
-            <div class="cat-name">${escapeHtml(cat.name)} <span class="cat-count">${cat.items.length}</span></div>
+            <div class="cat-name">${escapeHtml(cat.name)} <span class="cat-count">${cat.values.length}</span></div>
             <div class="cat-actions">
               <button class="tiny-btn blue" type="button" data-action="rename-category">수정</button>
               <button class="tiny-btn soft" type="button" data-action="delete-category">삭제</button>
             </div>
           </div>
-          <div class="item-list">
-            ${cat.items.length ? cat.items.map((item, index) => `
-              <span class="item-pill" title="눌러서 수정">
-                <button class="x-btn" type="button" data-action="edit-item" data-index="${index}" aria-label="캡슐 수정">✎</button>
-                <span class="item-name">${escapeHtml(item)}</span>
-                <button class="x-btn" type="button" data-action="delete-item" data-index="${index}" aria-label="캡슐 삭제">×</button>
+          <div class="value-list">
+            ${cat.values.map((value, index) => `
+              <span class="value-pill">
+                <button class="x-btn" type="button" data-action="edit-value" data-index="${index}" aria-label="값 수정">✎</button>
+                <span class="item-name">${escapeHtml(value.name)}</span>
+                <button class="x-btn" type="button" data-action="delete-value" data-index="${index}" aria-label="값 삭제">×</button>
               </span>
-            `).join('') : '<span class="helper">비어있음</span>'}
+            `).join('')}
           </div>
-          <form class="mini-form" data-action="add-item-form">
-            <input class="mini-input" type="text" maxlength="32" placeholder="캡슐 추가" />
+          <form class="mini-form" data-action="add-value-form">
+            <input class="mini-input" type="text" maxlength="20" placeholder="옵션 추가" />
             <button class="tiny-btn" type="submit">＋</button>
           </form>
         </div>
       `).join('');
     }
 
-    function draw() {
-      const selectedCats = state.categories.filter(cat => state.selectedCategoryIds.includes(cat.id));
-      let result = [];
+    function renderNewCapsuleTags() {
+      els.newCapsuleTags.innerHTML = state.categories.map(cat => `
+        <div class="tag-select">
+          <label>${escapeHtml(cat.name)}</label>
+          <select class="mini-select" data-new-tag-cat-id="${escapeHtml(cat.id)}">
+            <option value="">-</option>
+            ${cat.values.map(value => `<option value="${escapeHtml(value.id)}">${escapeHtml(value.name)}</option>`).join('')}
+          </select>
+        </div>
+      `).join('');
+    }
 
-      if (selectedCats.length) {
-        const emptyCats = selectedCats.filter(cat => !cat.items.length);
-        if (emptyCats.length) {
-          renderEmptyResult(`${emptyCats.map(cat => cat.name).join(', ')} 캡슐이 비어있어`);
-          return;
-        }
-        result = selectedCats.map(cat => ({ category: cat.name, item: randomFrom(cat.items) }));
-      } else {
-        const pool = state.categories.flatMap(cat => cat.items.map(item => ({ category: cat.name, item })));
-        if (!pool.length) {
-          renderEmptyResult('캡슐을 먼저 넣어줘');
-          return;
-        }
-        result = [randomFrom(pool)];
+    function capsuleTagChips(capsule) {
+      const chips = [];
+      state.categories.forEach(cat => {
+        const value = getValue(cat.id, capsule.tags[cat.id]);
+        if (value) chips.push(`<span class="tag-chip">${escapeHtml(cat.name)} · ${escapeHtml(value.name)}</span>`);
+      });
+      return chips.join('');
+    }
+
+    function renderCapsuleList() {
+      if (!state.capsules.length) {
+        els.capsuleList.innerHTML = '';
+        return;
       }
+      els.capsuleList.innerHTML = state.capsules.map(capsule => `
+        <div class="capsule-row" data-capsule-id="${escapeHtml(capsule.id)}">
+          <div class="capsule-top">
+            <div class="capsule-name">${escapeHtml(capsule.text)}</div>
+            <div class="capsule-actions">
+              <button class="tiny-btn blue" type="button" data-action="edit-capsule">수정</button>
+              <button class="tiny-btn soft" type="button" data-action="delete-capsule">삭제</button>
+            </div>
+          </div>
+          <div class="tagline">${capsuleTagChips(capsule)}</div>
+        </div>
+      `).join('');
+    }
 
-      lastDraw = result;
+    function capsuleMatches(capsule) {
+      return selectedEntries().every(([catId, valueIds]) => valueIds.includes(capsule.tags[catId]));
+    }
+
+    function draw() {
+      const pool = state.capsules.filter(capsuleMatches);
+      if (!state.capsules.length) {
+        renderEmptyResult('캡슐 없음');
+        return;
+      }
+      if (!pool.length) {
+        renderEmptyResult('맞는 캡슐 없음');
+        return;
+      }
+      const result = randomFrom(pool);
       els.drawBtn.disabled = true;
       els.jarWrap.classList.remove('is-drawing');
       void els.jarWrap.offsetWidth;
@@ -1014,78 +1128,137 @@
       els.resultCard.innerHTML = `<div class="result-empty">${escapeHtml(text)}</div>`;
     }
 
-    function renderResult(result) {
-      els.resultCard.innerHTML = result.map(part => `
-        <div class="result-line">
-          <span class="result-cat">${escapeHtml(part.category)}</span>
-          <span class="result-text">${escapeHtml(part.item)}</span>
-        </div>
-      `).join('');
+    function renderResult(capsule) {
+      els.resultCard.innerHTML = `
+        <div class="result-task">${escapeHtml(capsule.text)}</div>
+        <div class="result-tags">${capsuleTagChips(capsule)}</div>
+      `;
     }
 
     function addCategory(name) {
-      const clean = name.trim();
+      const clean = name.trim().slice(0, 18);
       if (!clean) return;
-      state.categories.push({ id: uid(), name: clean, items: [] });
+      state.categories.push({ id: uid('cat'), name: clean, values: [] });
       saveState();
-      showToast('카테고리 추가됨');
+      showToast('added');
     }
 
     function renameCategory(catId) {
-      const cat = state.categories.find(item => item.id === catId);
+      const cat = getCategory(catId);
       if (!cat) return;
       const next = prompt('카테고리 이름', cat.name);
       if (next === null) return;
-      const clean = next.trim();
+      const clean = next.trim().slice(0, 18);
       if (!clean) return;
-      cat.name = clean.slice(0, 18);
+      cat.name = clean;
       saveState();
     }
 
     function deleteCategory(catId) {
-      const cat = state.categories.find(item => item.id === catId);
+      const cat = getCategory(catId);
       if (!cat) return;
-      if (!confirm(`'${cat.name}' 카테고리를 삭제할까?`)) return;
+      if (!confirm(`'${cat.name}' 삭제?`)) return;
       state.categories = state.categories.filter(item => item.id !== catId);
-      state.selectedCategoryIds = state.selectedCategoryIds.filter(id => id !== catId);
+      delete state.selected[catId];
+      state.capsules.forEach(capsule => delete capsule.tags[catId]);
       saveState();
-      showToast('삭제됨');
+      showToast('deleted');
     }
 
-    function addItem(catId, value) {
-      const cat = state.categories.find(item => item.id === catId);
+    function addValue(catId, valueName) {
+      const cat = getCategory(catId);
       if (!cat) return;
-      const clean = value.trim();
+      const clean = valueName.trim().slice(0, 20);
       if (!clean) return;
-      cat.items.push(clean.slice(0, 32));
+      cat.values.push({ id: uid('v'), name: clean });
       saveState();
-      showToast('캡슐 추가됨');
+      showToast('added');
     }
 
-    function editItem(catId, index) {
-      const cat = state.categories.find(item => item.id === catId);
-      if (!cat || !cat.items[index]) return;
-      const next = prompt('캡슐 수정', cat.items[index]);
+    function editValue(catId, index) {
+      const cat = getCategory(catId);
+      if (!cat || !cat.values[index]) return;
+      const next = prompt('옵션 이름', cat.values[index].name);
       if (next === null) return;
-      const clean = next.trim();
+      const clean = next.trim().slice(0, 20);
       if (!clean) return;
-      cat.items[index] = clean.slice(0, 32);
+      cat.values[index].name = clean;
       saveState();
     }
 
-    function deleteItem(catId, index) {
-      const cat = state.categories.find(item => item.id === catId);
-      if (!cat) return;
-      cat.items.splice(index, 1);
-      saveState();
-    }
-
-    function toggleFilter(catId) {
-      if (state.selectedCategoryIds.includes(catId)) {
-        state.selectedCategoryIds = state.selectedCategoryIds.filter(id => id !== catId);
-      } else {
-        state.selectedCategoryIds.push(catId);
+    function deleteValue(catId, index) {
+      const cat = getCategory(catId);
+      if (!cat || !cat.values[index]) return;
+      const valueId = cat.values[index].id;
+      cat.values.splice(index, 1);
+      if (Array.isArray(state.selected[catId])) {
+        state.selected[catId] = state.selected[catId].filter(id => id !== valueId);
       }
+      state.capsules.forEach(capsule => {
+        if (capsule.tags[catId] === valueId) delete capsule.tags[catId];
+      });
+      saveState();
+    }
+
+    function addCapsule() {
+      const text = els.capsuleInput.value.trim().slice(0, 44);
+      if (!text) return;
+      const tags = {};
+      els.newCapsuleTags.querySelectorAll('[data-new-tag-cat-id]').forEach(select => {
+        if (select.value) tags[select.dataset.newTagCatId] = select.value;
+      });
+      state.capsules.unshift({ id: uid('capsule'), text, tags });
+      els.capsuleInput.value = '';
+      els.newCapsuleTags.querySelectorAll('select').forEach(select => select.value = '');
+      saveState();
+      showToast('added');
+    }
+
+    function editCapsule(capsuleId) {
+      const capsule = state.capsules.find(item => item.id === capsuleId);
+      if (!capsule) return;
+      const nextText = prompt('할일', capsule.text);
+      if (nextText === null) return;
+      const clean = nextText.trim().slice(0, 44);
+      if (!clean) return;
+      const nextTags = { ...capsule.tags };
+
+      for (const cat of state.categories) {
+        if (!cat.values.length) {
+          delete nextTags[cat.id];
+          continue;
+        }
+        const currentValueId = nextTags[cat.id] || '';
+        const currentIndex = cat.values.findIndex(value => value.id === currentValueId);
+        const list = cat.values.map((value, index) => `${index + 1}. ${value.name}`).join('\n');
+        const answer = prompt(`${cat.name}\n0. -\n${list}`, currentIndex >= 0 ? String(currentIndex + 1) : '0');
+        if (answer === null) return;
+        const number = Number(answer.trim());
+        if (!number) {
+          delete nextTags[cat.id];
+        } else if (cat.values[number - 1]) {
+          nextTags[cat.id] = cat.values[number - 1].id;
+        }
+      }
+
+      capsule.text = clean;
+      capsule.tags = nextTags;
+      saveState();
+    }
+
+    function deleteCapsule(capsuleId) {
+      state.capsules = state.capsules.filter(item => item.id !== capsuleId);
+      saveState();
+    }
+
+    function toggleFilter(catId, valueId) {
+      const selected = Array.isArray(state.selected[catId]) ? state.selected[catId] : [];
+      if (selected.includes(valueId)) {
+        state.selected[catId] = selected.filter(id => id !== valueId);
+      } else {
+        state.selected[catId] = [...selected, valueId];
+      }
+      if (!state.selected[catId].length) delete state.selected[catId];
       saveState();
     }
 
@@ -1095,7 +1268,7 @@
     els.closeFilter.addEventListener('click', () => closeOverlay(els.filterOverlay));
     els.doneFilter.addEventListener('click', () => closeOverlay(els.filterOverlay));
     els.clearFilter.addEventListener('click', () => {
-      state.selectedCategoryIds = [];
+      state.selected = {};
       saveState();
     });
 
@@ -1112,9 +1285,11 @@
     });
 
     els.filterList.addEventListener('click', (event) => {
-      const option = event.target.closest('[data-filter-id]');
-      if (!option) return;
-      toggleFilter(option.dataset.filterId);
+      const button = event.target.closest('[data-filter-value-id]');
+      if (!button) return;
+      const group = button.closest('[data-filter-cat-id]');
+      if (!group) return;
+      toggleFilter(group.dataset.filterCatId, button.dataset.filterValueId);
     });
 
     els.addCategoryForm.addEventListener('submit', (event) => {
@@ -1125,12 +1300,12 @@
     });
 
     els.categoryList.addEventListener('submit', (event) => {
-      const form = event.target.closest('[data-action="add-item-form"]');
+      const form = event.target.closest('[data-action="add-value-form"]');
       if (!form) return;
       event.preventDefault();
       const row = form.closest('[data-cat-id]');
       const input = form.querySelector('input');
-      addItem(row.dataset.catId, input.value);
+      addValue(row.dataset.catId, input.value);
       input.value = '';
       input.focus();
     });
@@ -1146,8 +1321,22 @@
 
       if (action === 'rename-category') renameCategory(catId);
       if (action === 'delete-category') deleteCategory(catId);
-      if (action === 'edit-item') editItem(catId, index);
-      if (action === 'delete-item') deleteItem(catId, index);
+      if (action === 'edit-value') editValue(catId, index);
+      if (action === 'delete-value') deleteValue(catId, index);
+    });
+
+    els.addCapsuleForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      addCapsule();
+    });
+
+    els.capsuleList.addEventListener('click', (event) => {
+      const button = event.target.closest('button[data-action]');
+      if (!button) return;
+      const row = button.closest('[data-capsule-id]');
+      if (!row) return;
+      if (button.dataset.action === 'edit-capsule') editCapsule(row.dataset.capsuleId);
+      if (button.dataset.action === 'delete-capsule') deleteCapsule(row.dataset.capsuleId);
     });
 
     document.addEventListener('keydown', (event) => {
